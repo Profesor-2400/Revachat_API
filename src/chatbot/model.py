@@ -86,8 +86,7 @@ Recuerda: Tu objetivo es hacer que planificar un viaje sea fácil y emocionante.
             self.model = genai.GenerativeModel(
                 model_name=settings.gemini_model,
                 generation_config=generation_config,
-                safety_settings=safety_settings,
-                system_instruction=self.system_prompt
+                safety_settings=safety_settings
             )
             
             self.is_loaded = True
@@ -117,10 +116,13 @@ Recuerda: Tu objetivo es hacer que planificar un viaje sea fácil y emocionante.
         
         try:
             # Iniciar chat con historial si existe
-            if conversation_history:
-                chat = self.model.start_chat(history=conversation_history)
-            else:
-                chat = self.model.start_chat(history=[])
+            history = conversation_history if conversation_history else []
+            
+            # Agregar el system prompt como primer mensaje
+            if not history:
+                history = [{"role": "model", "parts": self.system_prompt}]
+            
+            chat = self.model.start_chat(history=history)
             
             # Generar respuesta
             response = chat.send_message(message)
@@ -151,10 +153,14 @@ Recuerda: Tu objetivo es hacer que planificar un viaje sea fácil y emocionante.
             raise Exception("El modelo no está cargado. Llama a load_model() primero.")
         
         try:
-            if conversation_history:
-                chat = self.model.start_chat(history=conversation_history)
-            else:
-                chat = self.model.start_chat(history=[])
+            # Iniciar chat con historial si existe
+            history = conversation_history if conversation_history else []
+            
+            # Agregar el system prompt como primer mensaje
+            if not history:
+                history = [{"role": "model", "parts": self.system_prompt}]
+            
+            chat = self.model.start_chat(history=history)
             
             # Generar respuesta en streaming
             response = chat.send_message(message, stream=True)

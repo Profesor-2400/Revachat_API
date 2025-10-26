@@ -64,11 +64,17 @@ class ModelInfo(BaseModel):
     provider: str
     temperature: float
     max_tokens: int
+    
+    class Config:
+        protected_namespaces = ()
 
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool
     timestamp: datetime = Field(default_factory=datetime.now)
+    
+    class Config:
+        protected_namespaces = ()
 
 
 @app.on_event("startup")
