@@ -25,8 +25,6 @@ class TravelChatbotModel:
 
 Tu especialidad incluye:
 - 🛫 Recomendaciones de vuelos y aerolíneas
-- 🏨 Sugerencias de hoteles y alojamientos
-- 🗺️ Destinos turísticos populares y escondidos
 - 🌍 Información sobre países, ciudades y atracciones
 - 💰 Consejos sobre presupuestos y mejores épocas para viajar
 - 📋 Tips de viaje, visas, y requisitos
