@@ -7,63 +7,49 @@ from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 from config import settings
 
-# Configurar base de datos
 engine = create_engine(settings.database_url, echo=settings.debug)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
 class Conversation(Base):
-    """
-    Tabla de conversaciones
-    """
     __tablename__ = "conversations"
-    
+
     id = Column(Integer, primary_key=True, index=True)
-    conversation_id = Column(String(255), unique=True, index=True)
+    conversation_id = Column(String(255), unique=True, index=True, nullable=False)  # UUID público
+    title = Column(String(255), nullable=True)  # Título para el historial
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relación con mensajes
-    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan")
+
+    messages = relationship("Message", back_populates="conversation", cascade="all, delete-orphan", order_by="Message.created_at")
 
 
 class Message(Base):
-    """
-    Tabla de mensajes
-    """
     __tablename__ = "messages"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     conversation_id = Column(Integer, ForeignKey("conversations.id"))
-    role = Column(String(50))  # user, assistant, system
+    role = Column(String(50))  # "user" o "assistant"
     content = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relación con conversación
+
     conversation = relationship("Conversation", back_populates="messages")
 
 
 class TrainingExample(Base):
-    """
-    Tabla de ejemplos de entrenamiento
-    """
     __tablename__ = "training_examples"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     question = Column(Text)
     answer = Column(Text)
     category = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    is_active = Column(Integer, default=1)  # SQLite no tiene boolean nativo
+    is_active = Column(Integer, default=1)
 
 
 class ModelVersion(Base):
-    """
-    Tabla de versiones del modelo
-    """
     __tablename__ = "model_versions"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     version = Column(String(50), unique=True)
     model_path = Column(String(255))
@@ -74,17 +60,11 @@ class ModelVersion(Base):
 
 
 def init_db():
-    """
-    Inicializa la base de datos
-    """
     Base.metadata.create_all(bind=engine)
     print("Base de datos inicializada correctamente")
 
 
 def get_db():
-    """
-    Obtiene una sesión de base de datos
-    """
     db = SessionLocal()
     try:
         yield db
@@ -92,6 +72,5 @@ def get_db():
         db.close()
 
 
-# Inicializar BD al importar
 if __name__ == "__main__":
     init_db()

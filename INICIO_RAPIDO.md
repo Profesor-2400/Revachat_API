@@ -2,12 +2,12 @@
 
 ## Pasos para empezar:
 
-### 1️⃣ Obtener API Key de Gemini (GRATIS)
+### 1 - Obtener API Key de Gemini (GRATIS)
 1. Ve a: https://aistudio.google.com/app/apikey
 2. Haz clic en "Create API Key"
 3. Copia la API key generada
 
-### 2️⃣ Configurar el proyecto
+### 2 - Configurar el proyecto
 1. Abre el archivo `.env` en este proyecto
 2. Pega tu API key en la línea:
    ```
@@ -15,7 +15,7 @@
    ```
 3. Guarda el archivo
 
-### 3️⃣ Instalar dependencias
+### 3 - Instalar dependencias
 
 **Opción A: Script automático (recomendado)**
 ```powershell
